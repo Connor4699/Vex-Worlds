@@ -28,8 +28,8 @@ pros::Controller Master (pros::E_CONTROLLER_MASTER);
 // pros::ADIEncoder encoder_rear(3, 4, true);
 
 std::shared_ptr<OdomChassisController> chassis =
-ChassisControllerBuilder()
-	.withMotors({3,12}, {4, 8}) // left motor is 1, right motor is 2 (reversed)
+	ChassisControllerBuilder()
+	.withMotors({3, 12}, {4, 8}) // left motor is 1, right motor is 2 (reversed)
 	// green gearset, 4 inch wheel diameter, 11.5 inch wheel track
 	.withDimensions(AbstractMotor::gearset::green, {{4_in, 11.5_in}, imev5GreenTPR})
 	.withMaxVelocity(50)
@@ -41,48 +41,50 @@ ChassisControllerBuilder()
 
 
 std::shared_ptr<AsyncMotionProfileController> profileController =
-					 AsyncMotionProfileControllerBuilder()
-						 .withLimits({
-							 0.6, // Maximum linear velocity of the Chassis in m/s
-							 1.0, // Maximum linear acceleration of the Chassis in m/s/s
-							 2.5 // Maximum linear jerk of the Chassis in m/s/s/s
-						 })
-						 .withOutput(chassis)
-						 .buildMotionProfileController();
+	AsyncMotionProfileControllerBuilder()
+	.withLimits({
+		0.6, // Maximum linear velocity of the Chassis in m/s
+		1.0, // Maximum linear acceleration of the Chassis in m/s/s
+		2.5 // Maximum linear jerk of the Chassis in m/s/s/s
+	})
+	.withOutput(chassis)
+	.buildMotionProfileController();
 
-	 std::shared_ptr<AsyncPositionController<double, double>> rightsidecontroller =
-			 	AsyncPosControllerBuilder()
-		 		.withMotor({14,19}) // lift motor port 3
-						 		//        .withGains({liftkP, liftkI, liftkD})
-				 		.build();
+std::shared_ptr<AsyncPositionController<double, double>> rightsidecontroller =
+	AsyncPosControllerBuilder()
+	.withMotor({14, 19}) // lift motor port 3
+//    .withGains({liftkP, liftkI, liftkD})
+	.build();
 
-						std::shared_ptr<AsyncPositionController<double, double>> leftsidecontroller =
-				 			 	AsyncPosControllerBuilder()
-								// .withLimits({
-								// 	0.25,
-								// 	0.5,
-								// 	2.5
-																	//})
-				 		 		.withMotor({20,16}) // lift motor port 3
-				 						 		//        .withGains({liftkP, liftkI, liftkD})
-				 				 		.build();
+std::shared_ptr<AsyncPositionController<double, double>> leftsidecontroller =
+	AsyncPosControllerBuilder()
+	// .withLimits({
+	// 	0.25,
+	// 	0.5,
+	// 	2.5
+										//})
+	.withMotor({20, 16}) // lift motor port 3
+					//        .withGains({liftkP, liftkI, liftkD})
+	.build();
 
 std::shared_ptr<AsyncPositionController<double, double>> jawcontroller =
 	AsyncPosControllerBuilder()
-		.withMotor(15) // lift motor port 3
-		//        .withGains({liftkP, liftkI, liftkD})
-		.build();
+	.withMotor(15) // lift motor port 3
+	//        .withGains({liftkP, liftkI, liftkD})
+	.build();
 
 std::shared_ptr<AsyncPositionController<double, double>> liftcontroller =
-								 AsyncPosControllerBuilder()
-										 .withMotor(18) // lift motor port 3
-						 //        .withGains({liftkP, liftkI, liftkD})
-										 .build();
+	AsyncPosControllerBuilder()
+	.withMotor(18) // lift motor port 3
+//    .withGains({liftkP, liftkI, liftkD})
+	.build();
+
 std::shared_ptr<AsyncPositionController<double, double>> forkcontroller =
-									AsyncPosControllerBuilder()
-										.withMotor(1) // lift motor port 3
-																 //        .withGains({liftkP, liftkI, liftkD})
-										.build();
+	AsyncPosControllerBuilder()
+	.withMotor(1) // lift motor port 3
+//    .withGains({liftkP, liftkI, liftkD})
+	.build();
+
 /**
  * A callback function for LLEMU's center button.
  *
@@ -360,11 +362,6 @@ void autonomous() {
 // 		pros::lcd::set_text(0, std::to_string(encoder_right.get_value()));
 // }
 // turn approximately 45 degrees to end up at 90 degrees
-
-
-
-
-
 }
 
 /**
@@ -417,98 +414,71 @@ void opcontrol() {
 		double LjoyX = x/10.0;
 		double finalPWr = 0;
 
-		if ( (y > deadband) || (x > deadband)) {
-
+		if (y > deadband || x > deadband) {
 			if (y > 85) {
-
 				Pwr = (12.7 / (1.0 + exp(-(3.0/4.0)*(LjoyY - 6.0)))) * 10.0 - 3.0;
-
 			}
-
-			else if (y > 55 && y <= 85){
-
+			else if (y > 55 && y <= 85) {
 				Pwr = (12.7 / (1.0 + exp(-(3.0/4.0)*(LjoyY - 6.0)))) * 10.0 - 10.0;
-
 			}
 			else {
-
 				Pwr = 5*pow((1.0/5.5)*(LjoyY), 3.0) * 12.7;
-
 			}
 
 			if (x > 85) {
-
 				Trn = (12.7 / (1.0 + exp(-(3.0/4.0)*(LjoyX - 6.0)))) * 10.0 - 3.0;
-
 			}
-
-			else if (x > 55 && x <= 85){
-
+			else if (x > 55 && x <= 85) {
 				Trn = (12.7 / (1.0 + exp(-(3.0/4.0)*(LjoyX - 6.0)))) * 10.0 - 10.0;
-
 			}
 			else {
-
 				Trn = 5*pow((1.0/5.5)*(LjoyX), 3.0) * 12.7;
-
 			}
-
 		}
 		else {
 			Pwr = 0;
 			Trn = 0;
 		}
 
-		if (Master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) < 0){
+		if (Master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) < 0) {
 			Pwr = -Pwr;
 		}
 
-		if (Master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X) < 0){
+		if (Master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X) < 0) {
 			Trn = -Trn;
 		}
 
-		if (armPos > deadband){
-
+		if (armPos > deadband) {
 			if (armPos > 85) {
-
 				armPwr = ((12.7 / (1.0 + exp(-(3.0/4.0)*(armPos/10.0 - 6.0)))) * 10.0 - 3.0) * 1;
-
 			}
-
-			else if (armPos > 55 && armPos <= 85){
-
+			else if (armPos > 55 && armPos <= 85 ) {
 				armPwr = ((12.7 / (1.0 + exp(-(3.0/4.0)*(armPos/10.0 - 6.0)))) * 10.0 - 10.0) * 1;
-
 			}
 			else {
-
 				armPwr = (5*pow((1.0/5.5)*(armPos/10.0), 3.0) * 12.7) * 1;
-
 			}
 		}
-
 		else {
 			armPwr = 0;
 		}
 
-
-			if (Master.get_digital(DIGITAL_R1)) {
-				Claw.move_velocity(75);
-				}
-			else if (Master.get_digital(DIGITAL_R2)) {
-				Claw.move_velocity(-75);
-			}
-			else {
+		if (Master.get_digital(DIGITAL_R1)) {
+			Claw.move_velocity(75);
+		}
+		else if (Master.get_digital(DIGITAL_R2)) {
+			Claw.move_velocity(-75);
+		}
+		else {
 			Claw.move_velocity(0);
 		}
 
-		if (Master.get_digital(DIGITAL_L2)){
+		if (Master.get_digital(DIGITAL_L2)) {
 			//Fork.move_absolute(double (1850), 127);
 			//forkcontroller->setTarget(0);
 			BClaw.move_velocity(100);
-
-
-		} else if (Master.get_digital(DIGITAL_L1)){
+		}
+		else if (Master.get_digital(DIGITAL_L1)){
 			//Fork.move_absolute(double (1000), 127);
 			//forkcontroller->setTarget(-1900);
 			BClaw.move_velocity(-100);
@@ -522,7 +492,7 @@ void opcontrol() {
 		//
 		// }
 
-		if (Master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) < 0){
+		if (Master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) < 0) {
 			armPwr = -armPwr;
 		}
 
@@ -533,14 +503,14 @@ void opcontrol() {
 			else {
 				Intake01 = true;
 			}
-}
+		}
 
-	if (Lift.get_position() >= 500 && Intake01) {
+		if (Lift.get_position() >= 500 && Intake01) {
 			Intake.move_velocity(125);
 		}
-	else {
-		Intake.move_velocity(0);
-	}
+		else {
+			Intake.move_velocity(0);
+		}
 
 		leftPower = Pwr - 0.6*Trn;
 		rightPower = Pwr + 0.6*Trn;
@@ -551,4 +521,5 @@ void opcontrol() {
 		BRight.move(leftPower);
 		Lift.move(armPwr);
 		pros::delay(20);
-	}}
+	}
+}
