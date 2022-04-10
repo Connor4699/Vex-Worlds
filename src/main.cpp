@@ -402,9 +402,9 @@ void opcontrol() {
 
 	//Fork.set_zero_position(0);
 	while (true) {
-		pros::lcd::set_text(0, std::to_string(encoder_right.get_value()));
-		pros::lcd::set_text(6, std::to_string(encoder_left.get_value()));
-		pros::lcd::set_text(8, std::to_string(encoder_rear.get_value()));
+		pros::lcd::set_text(6, std::to_string(encoder_right.get_value()));
+		pros::lcd::set_text(8, std::to_string(encoder_left.get_value()));
+		pros::lcd::set_text(10, std::to_string(encoder_rear.get_value()));
 		int x = abs(Master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X));
 		int y = abs(Master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
 		double armPos = abs(Master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
