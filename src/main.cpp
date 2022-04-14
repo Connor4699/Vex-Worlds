@@ -4,8 +4,6 @@
 // pros::Motor FRight(10, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
 // pros::Motor BLeft(16, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
 // pros::Motor BRight(14, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
-// pros::ADIEncoder encoder_right(1,2, true);
-// pros::ADIEncoder encoder_left(7,8, false);
 pros::ADIEncoder encoder_right(7, 8, false);
 pros::ADIEncoder encoder_left(5, 6, true);
 pros::ADIEncoder encoder_rear(3, 4, true);
@@ -20,12 +18,7 @@ pros::Motor Claw(1, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS
 pros::Motor BClaw(15, pros::E_MOTOR_GEARSET_36, true, pros::E_MOTOR_ENCODER_COUNTS);
 
 pros::Imu inertial_sensor(14);
-
-
 pros::Controller Master (pros::E_CONTROLLER_MASTER);
-// pros::ADIEncoder encoder_right(7, 8, false);
-// pros::ADIEncoder encoder_left(5, 6, true);
-// pros::ADIEncoder encoder_rear(3, 4, true);
 
 std::shared_ptr<OdomChassisController> chassis =
 	ChassisControllerBuilder()
@@ -95,9 +88,9 @@ void on_center_button() {
 	static bool pressed = false;
 	pressed = !pressed;
 	if (pressed) {
-		pros::lcd::set_text(2, "I was pressed!");
+		pros::lcd::set_text(10, "I was pressed!");
 	} else {
-		pros::lcd::clear_line(2);
+		pros::lcd::clear_line(10);
 	}
 }
 
@@ -125,166 +118,161 @@ void inertial_turn(int degrees) {
 		FRight.set_voltage_limit(0);
 }
 
-void DriveStraight(int distance) {
-	if (distance > 0) {
-		while (encoder_left.get_value() < distance && encoder_right.get_value() < distance) {
-			FLeft.move(100);
-			FRight.move(100);
-			BLeft.move(100);
-			BRight.move(100);
-			if (encoder_left.get_value() >= distance) {
-				FLeft.move(0);
-				BLeft.move(0);
-			}
-			if (encoder_right.get_value() >= distance) {
-				FRight.move(0);
-				BRight.move(0);
-			}
-		}
+// void DriveStraight(int distance) {
+// 	if (distance > 0) {
+// 		while (encoder_left.get_value() < distance && encoder_right.get_value() < distance) {
+// 			FLeft.move(100);
+// 			FRight.move(100);
+// 			BLeft.move(100);
+// 			BRight.move(100);
+// 			if (encoder_left.get_value() >= distance) {
+// 				FLeft.move(0);
+// 				BLeft.move(0);
+// 			}
+// 			if (encoder_right.get_value() >= distance) {
+// 				FRight.move(0);
+// 				BRight.move(0);
+// 			}
+// 		}
+// 	}
+// 	else {
+// 		while (encoder_left.get_value() > distance && encoder_right.get_value() > distance) {
+// 			FLeft.move(-100);
+// 			FRight.move(-100);
+// 			BLeft.move(-100);
+// 			BRight.move(-100);
+// 		}
+// 	}
+// }
 
-	}
-	else {
-		while (encoder_left.get_value() > distance && encoder_right.get_value() > distance) {
-			FLeft.move(-100);
-			FRight.move(-100);
-			BLeft.move(-100);
-			BRight.move(-100);
-		}
-	}
+const double p = 2 * acos(0.0);
+const double circ = (p * 2.75)/360;
+const double L = 9.25;
+const double B = 3;
+
+//left, right, back, heading encoder values
+double prePos[3] = {0, 0, 0};
+double curPos[3] = {0, 0, 0};
+
+//x position, y position, heading
+double globalPos[3] = {0, 0, 0};
+
+void Sensors_reset(){
+		encoder_left.reset();
+		encoder_right.reset();
+		encoder_rear.reset();
 }
 
-// const double p = 2 * acos(0.0);
-// const double circ = (p * 2.75)/360;
-// const double L = 9.25;
-// const double B = 3;
-//
-// //left, right, back, heading encoder values
-// double prePos[3] = {0, 0, 0};
-// double curPos[3] = {0, 0, 0};
-//
-// //x position, y position, heading
-// double globalPos[3] = {0, 0, 0};
-//
-//
-//
-// void Sensors_reset(){
-// 		encoder_left.reset();
-// 		encoder_right.reset();
-// 		encoder_rear.reset();
-// }
-//
-// double * straight(){
-// 		curPos[0] = encoder_left.get_value()*-1;
-// 		curPos[1] = encoder_right.get_value()*-1;
-// 		curPos[2] = encoder_rear.get_value()*-1;
-// 		return curPos;
-// }
-//
-//
-// double * position(){
-// 		curPos[0] = (encoder_left.get_value())*-1;
-// 		curPos[1] = (encoder_right.get_value())*-1;
-// 		curPos[2] = (encoder_rear.get_value())*-1;
-//
-// 		double n1 = curPos[0] - prePos[0];
-// 		double n2 = curPos[1] - prePos[1];
-// 		double n3 = curPos[2] - prePos[2];
-//
-// 		double x = circ * ((n1 + n2)/2);
-// 		double y = circ * (n3 - (B * (n2 - n1)/L));
-// 		double theta = circ * (n2 - n1)/L;
-//
-//
-// 		globalPos[0] += x * cos(globalPos[2] + theta/2) - y * sin(globalPos[2] + theta/2);
-// 		globalPos[1] += x * sin(globalPos[2] + theta/2) + y * cos(globalPos[2] + theta/2);
-// 		globalPos[2] += theta;
-//
-//
-// 		prePos[0] = curPos[0];
-// 		prePos[1] = curPos[1];
-// 		prePos[2] = curPos[2];
-//
-// 		return globalPos;
-// 	}
-//
-//
-//
-// void reset(){
-// 	 FLeft.tare_position();
-// 	 FRight.tare_position();
-// 	 BLeft.tare_position();
-// 	 BRight.tare_position();
-// }
-// void setDrive(int left, int right){
-// 	 FLeft.move(left);
-// 	 FRight.move(right);
-// 	 BLeft.move(left);
-// 	 BRight.move(right);
-// }
-//
-// double P, tP, turnP;
-// double tD, tI, D, I, turnD, turnI, preTheta, preP, preTurn, tPID, PID, turnPID = 0;
-// bool enable = true;
-// const double kp = 15;
-// const double kd = 10;
-// const double ki = 0;
-//
-// const double tkp = 17;
-// const double tkd = 5;
-// const double tki = 0;
-//
-// const double turnkp = 130;
-// const double turnkd = 11;
-// const double turnki = 0;
-//
-// void PIDMove(double units){
-//  enable = true;
-// 	 while(enable) {
-// 			 double *pos = position();
-// 			 P = units - (pos[0]);
-// 			 I += P;
-// 			 D = P - preP;
-//
-// 			 tP = (pos[2]*1.0);
-// 			 tI += tP;
-// 			 tD = tP - preTheta;
-//
-// 			 PID = (P * kp) + (D * kd) + (I * ki);
-// 			 tPID = (tP * tkp) + (tD * tkd) + (tI * tki);
-// 			 pros::lcd::set_text(0, std::to_string(pos[0]));
-// 			 pros::lcd::set_text(1, std::to_string(pos[2]));
-// 			 pros::lcd::set_text(3, std::to_string(PID));
-// 			 pros::lcd::set_text(4, std::to_string(tPID));
-//
-// 			 setDrive(PID + tPID, PID - tPID);
-// 			 preP = P;
-// 			 preTheta = tP;
-// 			 if ((units == pos[0]) || (((P < 0.03) && (P > -0.03)))) {
-// 					 enable = false;
-// 					 break;
-// 			 }
-// 	 }
-// }
-// void PIDTurn(double radians){
-//  enable = true;
-// 	 while(enable){
-// 			 double *pos = position();
-//
-// 			 turnP = radians - pos[2];
-// 			 turnI += turnP;
-// 			 turnD = turnP - preTurn;
-// 			 turnPID = (turnP * turnkp) + (turnD * turnkd) + (turnI * turnki);
-// 			 setDrive(1*turnPID, -1*turnPID);
-// 			 pros::lcd::set_text(2, std::to_string(turnPID));
-// 			 pros::lcd::set_text(3, std::to_string(pos[2]));
-// 			 if (radians == pos[2] || (abs(radians-pos[2]) <= 0.01)) {
-// 					 enable = false;
-// 					 break;
-// 			 }
-// 			 preTurn = turnP;
-// 			 pros::delay(20);
-// 	 }
-// }
+double * straight(){
+		curPos[0] = encoder_left.get_value()*-1;
+		curPos[1] = encoder_right.get_value()*-1;
+		curPos[2] = encoder_rear.get_value()*-1;
+		return curPos;
+}
+
+
+double * position(){
+		curPos[0] = (encoder_left.get_value())*-1;
+		curPos[1] = (encoder_right.get_value())*-1;
+		curPos[2] = (encoder_rear.get_value())*-1;
+
+		double n1 = curPos[0] - prePos[0];
+		double n2 = curPos[1] - prePos[1];
+		double n3 = curPos[2] - prePos[2];
+
+		double x = circ * ((n1 + n2)/2);
+		double y = circ * (n3 - (B * (n2 - n1)/L));
+		double theta = circ * (n2 - n1)/L;
+
+
+		globalPos[0] += x * cos(globalPos[2] + theta/2) - y * sin(globalPos[2] + theta/2);
+		globalPos[1] += x * sin(globalPos[2] + theta/2) + y * cos(globalPos[2] + theta/2);
+		globalPos[2] += theta;
+
+
+		prePos[0] = curPos[0];
+		prePos[1] = curPos[1];
+		prePos[2] = curPos[2];
+
+		return globalPos;
+	}
+
+void reset(){
+	 FLeft.tare_position();
+	 FRight.tare_position();
+	 BLeft.tare_position();
+	 BRight.tare_position();
+}
+void setDrive(int left, int right){
+	 FLeft.move(left);
+	 FRight.move(right);
+	 BLeft.move(left);
+	 BRight.move(right);
+}
+
+double P, tP, turnP;
+double tD, tI, D, I, turnD, turnI, preTheta, preP, preTurn, tPID, PID, turnPID = 0;
+bool enable = true;
+const double kp = 15;
+const double kd = 10;
+const double ki = 0;
+
+const double tkp = 17;
+const double tkd = 5;
+const double tki = 0;
+
+const double turnkp = 130;
+const double turnkd = 11;
+const double turnki = 0;
+
+void PIDMove(double units){
+ enable = true;
+	 while(enable) {
+			 double *pos = position();
+			 P = units - (pos[0]);
+			 I += P;
+			 D = P - preP;
+
+			 tP = (pos[2]*1.0);
+			 tI += tP;
+			 tD = tP - preTheta;
+
+			 PID = (P * kp) + (D * kd) + (I * ki);
+			 tPID = (tP * tkp) + (tD * tkd) + (tI * tki);
+			 pros::lcd::set_text(0, std::to_string(pos[0]));
+			 pros::lcd::set_text(1, std::to_string(pos[2]));
+			 pros::lcd::set_text(3, std::to_string(PID));
+			 pros::lcd::set_text(4, std::to_string(tPID));
+
+			 setDrive(PID + tPID, PID - tPID);
+			 preP = P;
+			 preTheta = tP;
+			 if ((units == pos[0]) || (((P < 0.03) && (P > -0.03)))) {
+					 enable = false;
+					 break;
+			 }
+	 }
+}
+void PIDTurn(double radians){
+ enable = true;
+	 while(enable){
+			 double *pos = position();
+
+			 turnP = radians - pos[2];
+			 turnI += turnP;
+			 turnD = turnP - preTurn;
+			 turnPID = (turnP * turnkp) + (turnD * turnkd) + (turnI * turnki);
+			 setDrive(1*turnPID, -1*turnPID);
+			 pros::lcd::set_text(2, std::to_string(turnPID));
+			 pros::lcd::set_text(3, std::to_string(pos[2]));
+			 if (radians == pos[2] || (abs(radians-pos[2]) <= 0.01)) {
+					 enable = false;
+					 break;
+			 }
+			 preTurn = turnP;
+			 pros::delay(20);
+	 }
+}
 
 
 
@@ -296,7 +284,7 @@ void DriveStraight(int distance) {
  */
 void initialize() {
 	pros::lcd::initialize();
-	pros::lcd::set_text(1, "I'm hungry!");
+	pros::lcd::set_text(9, "I'm hungry!");
 
 	pros::lcd::register_btn1_cb(on_center_button);
 
@@ -402,9 +390,12 @@ void opcontrol() {
 
 	//Fork.set_zero_position(0);
 	while (true) {
-		pros::lcd::set_text(6, std::to_string(encoder_right.get_value()));
-		pros::lcd::set_text(8, std::to_string(encoder_left.get_value()));
-		pros::lcd::set_text(10, std::to_string(encoder_rear.get_value()));
+		pros::lcd::set_text(1, "right");
+		pros::lcd::set_text(2, std::to_string(encoder_right.get_value()));
+		pros::lcd::set_text(3, "left");
+		pros::lcd::set_text(4, std::to_string(encoder_left.get_value()));
+		pros::lcd::set_text(5, "rear");
+		pros::lcd::set_text(6, std::to_string(encoder_rear.get_value()));
 		int x = abs(Master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X));
 		int y = abs(Master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
 		double armPos = abs(Master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
@@ -505,11 +496,11 @@ void opcontrol() {
 			}
 		}
 
-		if (Lift.get_position() >= 500 && Intake01) {
-			Intake.move_velocity(125);
+		if (Lift.get_position() >= 400 && Intake01) {
+			Intake.move(100);
 		}
 		else {
-			Intake.move_velocity(0);
+			Intake.move(0);
 		}
 
 		leftPower = Pwr - 0.6*Trn;
