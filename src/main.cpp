@@ -254,25 +254,27 @@ void PIDMove(double units){
 			 }
 	 }
 }
-void PIDTurn(double radians){
- enable = true;
-	 while(enable){
-			 double *pos = position();
+void PIDTurn(double radians) {
+	size_t count = 0;
+	while (true) {
+		double *pos = position();
 
-			 turnP = radians - pos[2];
-			 turnI += turnP;
-			 turnD = turnP - preTurn;
-			 turnPID = (turnP * turnkp) + (turnD * turnkd) + (turnI * turnki);
-			 setDrive(1*turnPID, -1*turnPID);
-			 pros::lcd::set_text(2, std::to_string(turnPID));
-			 pros::lcd::set_text(3, std::to_string(pos[2]));
-			 if (radians == pos[2] || (abs(radians-pos[2]) <= 0.01)) {
-					 enable = false;
-					 break;
-			 }
-			 preTurn = turnP;
-			 pros::delay(20);
-	 }
+		turnP = radians - pos[2];
+		turnI += turnP;
+		turnD = turnP - preTurn;
+		turnPID = (turnP * turnkp) + (turnD * turnkd) + (turnI * turnki);
+		setDrive(1*turnPID, -1*turnPID);
+		pros::lcd::set_text(2, std::to_string(turnPID));
+		pros::lcd::set_text(3, std::to_string(pos[2]));
+		pros::lcd::set_text(4, std::to_string(count));
+		if (radians == pos[2] || (abs(radians-pos[2]) < 0.01)) {
+			break;
+		}
+		// break;
+		preTurn = turnP;
+		pros::delay(20);
+		count++;
+	}
 }
 
 
@@ -289,7 +291,7 @@ void initialize() {
 
 	pros::lcd::register_btn1_cb(on_center_button);
 
-	//autonomous();
+	autonomous();
 
 	// pros::Motor FLeft(20, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
 	// pros::Motor FRight(10, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
@@ -339,7 +341,7 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-
+	PIDMove(5);
 //DriveStraight(1080);
 
 //inertial_turn(90);
@@ -456,13 +458,13 @@ void opcontrol() {
 		}
 
 		if (Master.get_digital(DIGITAL_R1)) {
-			Claw.move_velocity(75);
+			Claw.move(85);
 		}
 		else if (Master.get_digital(DIGITAL_R2)) {
-			Claw.move_velocity(-75);
+			Claw.move(-60);
 		}
 		else {
-			Claw.move_velocity(0);
+			Claw.move(0);
 		}
 
 		if (Master.get_digital(DIGITAL_L2)) {
