@@ -75,6 +75,10 @@ void opcontrol(void);
 /**
  * You can add C++-only headers here
  */
+#include "globals.hpp"
+#include "drive.hpp"
+#include "autonomous.hpp"
+#include "opcontrol.hpp"
 //#include <iostream>
 #endif
 
