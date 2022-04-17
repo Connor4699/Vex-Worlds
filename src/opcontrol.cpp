@@ -1,5 +1,28 @@
 #include "main.h"
 
+double prev_pos[3] = {0, 0, 0};
+const double ticks_per_inch = 360/(2.75*pi);
+
+/**
+ * @brief 
+ * 
+ * @param ticks encoder ticks
+ * @return number of inches traveled
+ */
+double ticks_to_inches(double ticks) {
+	return ticks/ticks_per_inch;
+}
+
+/**
+ * @brief Get the delta theta 
+ * 
+ * @return the change in theta from the last position
+ */
+double get_delta_theta() {
+	
+	return 0;
+}
+
 void my_opcontrol() {
     front_left.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	front_right.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
