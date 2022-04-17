@@ -2,6 +2,8 @@
 
 double prev_pos[3] = {0, 0, 0};
 const double ticks_per_inch = 360/(2.75*pi);
+const double dist_between_wheels = 11;
+double angle = 0;
 
 /**
  * @brief 
@@ -18,9 +20,16 @@ double ticks_to_inches(double ticks) {
  * 
  * @return the change in theta from the last position
  */
-double get_delta_theta() {
-	
-	return 0;
+double get_delta_theta(double deltaL, double deltaR) {
+	return (deltaL-deltaR)/dist_between_wheels;
+}
+
+void update() {
+	double deltaL = ticks_to_inches(encoder_left.get_value()) - prev_pos[0];
+	double deltaR = ticks_to_inches(encoder_right.get_value()) - prev_pos[1];
+	angle += get_delta_theta(deltaL, deltaR);
+	prev_pos[0] = ticks_to_inches(encoder_left.get_value());
+	prev_pos[1] = ticks_to_inches(encoder_right.get_value());
 }
 
 void my_opcontrol() {
@@ -48,12 +57,17 @@ void my_opcontrol() {
 
 	//Fork.set_zero_position(0);
 	while (true) {
-		pros::lcd::set_text(1, "right");
-		pros::lcd::set_text(2, std::to_string(encoder_right.get_value()));
-		pros::lcd::set_text(3, "left");
-		pros::lcd::set_text(4, std::to_string(encoder_left.get_value()));
-		pros::lcd::set_text(5, "rear");
-		pros::lcd::set_text(6, std::to_string(encoder_rear.get_value()));
+		// pros::lcd::set_text(1, "right");
+		// pros::lcd::set_text(2, std::to_string(encoder_right.get_value()));
+		// pros::lcd::set_text(3, "left");
+		// pros::lcd::set_text(4, std::to_string(encoder_left.get_value()));
+		// pros::lcd::set_text(5, "rear");
+		// pros::lcd::set_text(6, std::to_string(encoder_rear.get_value()));
+
+		update();
+		pros::lcd::set_text(1, "angle in degrees");
+		pros::lcd::set_text(2, std::to_string(angle));
+
 		int x = abs(Master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X));
 		int y = abs(Master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
 		double armPos = abs(Master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
