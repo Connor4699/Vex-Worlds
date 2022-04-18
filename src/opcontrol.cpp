@@ -2,7 +2,7 @@
 
 double prev_pos[3] = {0, 0, 0};
 const double ticks_per_inch = 360/(2.75*pi);
-const double dist_between_wheels = 11;
+const double dist_between_wheels = 8.75;
 double angle = 0;
 
 /**
@@ -65,14 +65,29 @@ void my_opcontrol() {
 		// pros::lcd::set_text(6, std::to_string(encoder_rear.get_value()));
 
 		update();
-		pros::lcd::set_text(1, "angle in degrees");
-		pros::lcd::set_text(2, std::to_string(angle));
+		pros::lcd::set_text(1, "radians: " + std::to_string(angle));
+		pros::lcd::set_text(2, "left (in.): " + std::to_string(prev_pos[0]));
+		pros::lcd::set_text(3, "right (in.): " + std::to_string(prev_pos[1]));
+
+		prev_pos[2] = ticks_to_inches(encoder_rear.get_value());
+		pros::lcd::set_text(4, "back (in.): " + std::to_string(prev_pos[2]));
 
 		int x = abs(Master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X));
 		int y = abs(Master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
 		double armPos = abs(Master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
 
-
+		// if (Master.get_digital(DIGITAL_B)) {
+		// 	front_left.move(0);
+		// front_right.move(0);
+		// back_left.move(0);
+		// back_right.move(0);
+		// 	pros::delay(10000000);
+		// }
+		// front_left.move(50);
+		// front_right.move(50);
+		// back_left.move(50);
+		// back_right.move(50);
+		
 		double LjoyY = y/10.0;
 		double LjoyX = x/10.0;
 		double finalPWr = 0;
@@ -183,6 +198,7 @@ void my_opcontrol() {
 		front_right.move(leftPower);
 		back_right.move(leftPower);
 		lift.move(armPwr);
+		
 		pros::delay(20);
 	}
 }
