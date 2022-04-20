@@ -1,11 +1,8 @@
 #include "main.h"
 
-// pros::ADIEncoder encoder_right(7, 8, false);
-// pros::ADIEncoder encoder_left(5, 6, true);
-pros::ADIEncoder encoder_rear(3, 4, true);
-
-pros::ADIEncoder encoder_right(5, 6, false);
-pros::ADIEncoder encoder_left(7, 8, true);
+pros::ADIEncoder encoder_right(7, 8, false);
+pros::ADIEncoder encoder_left(5, 6, true);
+pros::ADIEncoder encoder_back(3, 4, true);
 
 pros::Motor front_left(19, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
 pros::Motor front_right(11, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);

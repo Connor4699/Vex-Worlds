@@ -2,7 +2,7 @@
 
 extern pros::ADIEncoder encoder_right;
 extern pros::ADIEncoder encoder_left;
-extern pros::ADIEncoder encoder_rear;
+extern pros::ADIEncoder encoder_back;
 
 extern pros::Motor front_left;
 extern pros::Motor front_right;

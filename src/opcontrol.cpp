@@ -1,9 +1,10 @@
 #include "main.h"
 
-double prev_pos[3] = {0, 0, 0};
+double encoder_dist[3] = {0, 0, 0}; // left, right, back
+double robot_position[3] = {0, 0, 0}; // x, y, angle
 const double ticks_per_inch = 360/(2.75*pi);
-const double dist_between_wheels = 8.75;
-double angle = 0;
+const double dist_between_wheels = 9.25;
+const double dist_to_rear_enc = 3;
 
 /**
  * @brief 
@@ -25,11 +26,34 @@ double get_delta_theta(double deltaL, double deltaR) {
 }
 
 void update() {
-	double deltaL = ticks_to_inches(encoder_left.get_value()) - prev_pos[0];
-	double deltaR = ticks_to_inches(encoder_right.get_value()) - prev_pos[1];
-	angle += get_delta_theta(deltaL, deltaR);
-	prev_pos[0] = ticks_to_inches(encoder_left.get_value());
-	prev_pos[1] = ticks_to_inches(encoder_right.get_value());
+	double deltaL = ticks_to_inches(encoder_left.get_value()) - encoder_dist[0];
+	double deltaR = ticks_to_inches(encoder_right.get_value()) - encoder_dist[1];
+	double deltaB = ticks_to_inches(encoder_back.get_value()) - encoder_dist[2];
+	double deltaTheta = get_delta_theta(deltaL, deltaR);
+
+	
+	//robot_position[2] = std::fmod(robot_position[2], (2*pi));
+
+	encoder_dist[0] = ticks_to_inches(encoder_left.get_value());
+	encoder_dist[1] = ticks_to_inches(encoder_right.get_value());
+	encoder_dist[2] = ticks_to_inches(encoder_back.get_value());
+
+	double local_x = 2 * std::sin(robot_position[2]/2) * (deltaB/deltaTheta + dist_to_rear_enc);
+	double local_y = 2 * std::sin(robot_position[2]/2) * (deltaR/deltaTheta + dist_between_wheels/2);
+	
+	double p = deltaTheta/2 + robot_position[2]; // The global ending angle of the robot
+	double cosP = std::cos(p);
+	double sinP = std::sin(p);
+
+	// Update the global position
+	robot_position[1] += local_y * cosP;
+	robot_position[0] += local_y * sinP;
+
+	robot_position[1] += local_x * -sinP; // -sin(x) = sin(-x)
+	robot_position[0] += local_x * cosP; // cos(x) = cos(-x)
+
+	// update global positions
+	robot_position[2] += deltaTheta;
 }
 
 void my_opcontrol() {
@@ -65,12 +89,10 @@ void my_opcontrol() {
 		// pros::lcd::set_text(6, std::to_string(encoder_rear.get_value()));
 
 		update();
-		pros::lcd::set_text(1, "radians: " + std::to_string(angle));
-		pros::lcd::set_text(2, "left (in.): " + std::to_string(prev_pos[0]));
-		pros::lcd::set_text(3, "right (in.): " + std::to_string(prev_pos[1]));
-
-		prev_pos[2] = ticks_to_inches(encoder_rear.get_value());
-		pros::lcd::set_text(4, "back (in.): " + std::to_string(prev_pos[2]));
+		pros::lcd::set_text(1, "radians: " + std::to_string(robot_position[2]));
+		pros::lcd::set_text(2, "left (in.): " + std::to_string(encoder_dist[0]));
+		pros::lcd::set_text(3, "right (in.): " + std::to_string(encoder_dist[1]));
+		pros::lcd::set_text(4, "back (in.): " + std::to_string(encoder_dist[2]));
 
 		int x = abs(Master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X));
 		int y = abs(Master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));

@@ -70,20 +70,20 @@ void inertial_turn(int degrees) {
 void sensors_reset() {
     encoder_left.reset();
     encoder_right.reset();
-    encoder_rear.reset();
+    encoder_back.reset();
 }
 
 double* straight() {
     curPos[0] = encoder_left.get_value()*-1;
     curPos[1] = encoder_right.get_value()*-1;
-    curPos[2] = encoder_rear.get_value()*-1;
+    curPos[2] = encoder_back.get_value()*-1;
     return curPos;
 }
 
 double* position() {
     curPos[0] = (encoder_left.get_value())*-1;
     curPos[1] = (encoder_right.get_value())*-1;
-    curPos[2] = (encoder_rear.get_value())*-1;
+    curPos[2] = (encoder_back.get_value())*-1;
 
     double n1 = curPos[0] - prePos[0];
     double n2 = curPos[1] - prePos[1];
