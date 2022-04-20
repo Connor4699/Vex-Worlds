@@ -79,6 +79,7 @@ void opcontrol(void);
 #include "drive.hpp"
 #include "autonomous.hpp"
 #include "opcontrol.hpp"
+#include "tracking.hpp"
 //#include <iostream>
 #endif
 

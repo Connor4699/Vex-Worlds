@@ -9,9 +9,8 @@
 void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(9, "I'm hungry!");
-
 	pros::lcd::register_btn1_cb(on_center_button);
-
+	pros::Task tracking_task(track_pos);
 	autonomous();
 }
 
