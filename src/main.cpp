@@ -10,6 +10,16 @@ void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(9, "I'm hungry!");
 	pros::lcd::register_btn1_cb(on_center_button);
+
+	front_left.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	front_right.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	back_left.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	back_right.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	back_claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	
 	pros::Task tracking_task(track_pos);
 	autonomous();
 }

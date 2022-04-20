@@ -1,15 +1,6 @@
 #include "main.h"
 
 void my_opcontrol() {
-    front_left.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-	front_right.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-	back_left.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-	back_right.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-	lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	back_claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-
 	double armPwr = 0;
 	double ClawOpen = 0;
 	double ClawClose = 0;
