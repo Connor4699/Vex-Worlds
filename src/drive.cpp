@@ -132,10 +132,10 @@ void PIDMove(double units){
 
         PID = (P * kp) + (D * kd) + (I * ki);
         tPID = (tP * tkp) + (tD * tkd) + (tI * tki);
-        pros::lcd::set_text(0, std::to_string(pos[0]));
-        pros::lcd::set_text(1, std::to_string(pos[2]));
-        pros::lcd::set_text(3, std::to_string(PID));
-        pros::lcd::set_text(4, std::to_string(tPID));
+        // pros::lcd::set_text(0, std::to_string(pos[0]));
+        // pros::lcd::set_text(1, std::to_string(pos[2]));
+        // pros::lcd::set_text(3, std::to_string(PID));
+        // pros::lcd::set_text(4, std::to_string(tPID));
 
         setDrive(PID + tPID, PID - tPID);
         preP = P;
@@ -157,9 +157,9 @@ void PIDTurn(double radians) {
 		turnD = turnP - preTurn;
 		turnPID = (turnP * turnkp) + (turnD * turnkd) + (turnI * turnki);
 		setDrive(1*turnPID, -1*turnPID);
-		pros::lcd::set_text(2, std::to_string(turnPID));
-		pros::lcd::set_text(3, std::to_string(pos[2]));
-		pros::lcd::set_text(4, std::to_string(count));
+		// pros::lcd::set_text(2, std::to_string(turnPID));
+		// pros::lcd::set_text(3, std::to_string(pos[2]));
+		// pros::lcd::set_text(4, std::to_string(count));
 		if (radians == pos[2] || (abs(radians-pos[2]) < 0.01)) {
 			break;
 		}
@@ -167,4 +167,8 @@ void PIDTurn(double radians) {
 		pros::delay(20);
 		count++;
 	}
+}
+
+void drive_to_point(double x, double y) {
+
 }
