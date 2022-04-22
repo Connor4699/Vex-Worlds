@@ -2,7 +2,7 @@
 
 namespace tracking {
     struct RobotPosition {
-        double x, y, angle;
+        double x, y, heading;
     };
 
     struct EncoderDistances {
@@ -17,9 +17,9 @@ namespace tracking {
 
     double ticks_to_inches(double ticks);
 
-    double get_delta_theta(double deltaL, double deltaR);
-
     void update_pos();
+
+    void update_pos2();
 
     void track_pos();
 
