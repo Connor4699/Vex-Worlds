@@ -81,6 +81,7 @@ void opcontrol(void);
 #include "opcontrol.hpp"
 #include "tracking.hpp"
 #include "pid.hpp"
+#include "subsystems.hpp"
 //#include <iostream>
 #endif
 

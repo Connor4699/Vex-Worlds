@@ -1,6 +1,22 @@
 #include "main.h"
 
 /**
+ * A callback function for LLEMU's center button.
+ *
+ * When this callback is fired, it will toggle line 2 of the LCD text between
+ * "I was pressed!" and nothing.
+ */
+void on_center_button() {
+	static bool pressed = false;
+	pressed = !pressed;
+	if (pressed) {
+		pros::lcd::set_text(10, "I was pressed!");
+	} else {
+		pros::lcd::clear_line(10);
+	}
+}
+
+/**
  * Runs initialization code. This occurs as soon as the program is started.
  *
  * All other competition modes are blocked by initialize; it is recommended
@@ -11,15 +27,15 @@ void initialize() {
 	pros::lcd::set_text(9, "I'm hungry!");
 	pros::lcd::register_btn1_cb(on_center_button);
 
-	front_left.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-	front_right.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-	back_left.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-	back_right.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-	lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	back_claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-	
+	motor::front_left.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	motor::front_right.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	motor::back_left.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	motor::back_right.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	motor::lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	motor::claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	motor::back_claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	motor::intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+
 	pros::Task tracking_task(tracking::track_pos);
 	autonomous();
 }

@@ -1,18 +1,21 @@
 #include "main.h"
 
-extern pros::ADIEncoder encoder_right;
-extern pros::ADIEncoder encoder_left;
-extern pros::ADIEncoder encoder_back;
+namespace enc {
+    extern pros::ADIEncoder right;
+    extern pros::ADIEncoder left;
+    extern pros::ADIEncoder back;
+}
 
-extern pros::Motor front_left;
-extern pros::Motor front_right;
-extern pros::Motor back_left;
-extern pros::Motor back_right;
-
-extern pros::Motor intake;
-extern pros::Motor lift;
-extern pros::Motor claw;
-extern pros::Motor back_claw;
+namespace motor {
+    extern pros::Motor front_left;
+    extern pros::Motor front_right;
+    extern pros::Motor back_left;
+    extern pros::Motor back_right;
+    extern pros::Motor intake;
+    extern pros::Motor lift;
+    extern pros::Motor claw;
+    extern pros::Motor back_claw;
+}
 
 extern pros::Imu inertial_sensor;
 extern pros::Controller Master;

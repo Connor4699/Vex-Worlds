@@ -21,14 +21,14 @@ namespace tracking {
 	 * @brief this doesn't work at the moment
 	 */
 	void update_pos() {
-		double deltaL = ticks_to_inches(encoder_left.get_value()) - enc_dist.left;
-		double deltaR = ticks_to_inches(encoder_right.get_value()) - enc_dist.right;
-		double deltaB = ticks_to_inches(encoder_back.get_value()) - enc_dist.back;
+		double deltaL = ticks_to_inches(enc::left.get_value()) - enc_dist.left;
+		double deltaR = ticks_to_inches(enc::right.get_value()) - enc_dist.right;
+		double deltaB = ticks_to_inches(enc::back.get_value()) - enc_dist.back;
 		double deltaTheta = (deltaL-deltaR) / dist_between_wheels;
 
-		enc_dist.left = ticks_to_inches(encoder_left.get_value());
-		enc_dist.right = ticks_to_inches(encoder_right.get_value());
-		enc_dist.back = ticks_to_inches(encoder_back.get_value());
+		enc_dist.left = ticks_to_inches(enc::left.get_value());
+		enc_dist.right = ticks_to_inches(enc::right.get_value());
+		enc_dist.back = ticks_to_inches(enc::back.get_value());
 
 		double local_x, local_y, half_ang;
 
@@ -66,9 +66,9 @@ namespace tracking {
      */
     void update_pos2() {
         // getting positions of encoders in inches
-        double posL = ticks_to_inches(encoder_left.get_value());
-        double posR = ticks_to_inches(encoder_right.get_value());
-        double posB = ticks_to_inches(encoder_back.get_value());
+        double posL = ticks_to_inches(enc::left.get_value());
+        double posR = ticks_to_inches(enc::right.get_value());
+        double posB = ticks_to_inches(enc::back.get_value());
 
         // calculating the change in position of the encoders in inches
         double deltaL = posL - enc_dist.left;
