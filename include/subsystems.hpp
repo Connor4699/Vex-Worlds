@@ -1,10 +1,12 @@
 #include "main.h"
 
 namespace lift {
+    extern bool hold;
     void op_lift();
 }
 
 namespace claw {
+    extern bool hold;
     void op_claw();
 	void op_back_claw();
 }
