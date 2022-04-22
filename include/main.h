@@ -80,6 +80,7 @@ void opcontrol(void);
 #include "autonomous.hpp"
 #include "opcontrol.hpp"
 #include "tracking.hpp"
+#include "pid.hpp"
 //#include <iostream>
 #endif
 

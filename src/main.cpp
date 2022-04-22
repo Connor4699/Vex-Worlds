@@ -20,7 +20,7 @@ void initialize() {
 	back_claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	
-	pros::Task tracking_task(track_pos);
+	pros::Task tracking_task(tracking::track_pos);
 	autonomous();
 }
 
