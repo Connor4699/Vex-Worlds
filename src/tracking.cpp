@@ -5,7 +5,7 @@ namespace tracking {
 	EncoderDistances enc_dist = {0, 0, 0};
 	const double ticks_per_inch = 360/(2.75*pi);
 	const double dist_between_wheels = 9.24;
-	const double dist_to_rear_enc = -2.5; /** @todo tune this value */
+	const double dist_to_rear_enc = -3; /** @todo tune this value */
 
 	/**
 	 * @brief 
@@ -108,6 +108,7 @@ namespace tracking {
 	 * 
 	 */
 	void track_pos() {
+		reset();
 		while (true) {
 			//update_pos();
             update_pos2();
@@ -122,6 +123,14 @@ namespace tracking {
 	}
 
 	void reset() {
-		
+		enc::left.reset();
+		enc::right.reset();
+		enc::back.reset();
+		robot_pos = {0, 0, 0};
+		enc_dist = {0, 0, 0};
+	}
+
+	double get_distance() {
+		return (enc_dist.left+enc_dist.right)/2.0;
 	}
 }

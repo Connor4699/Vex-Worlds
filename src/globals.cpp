@@ -27,7 +27,7 @@ std::shared_ptr<OdomChassisController> chassis =
 		.withDimensions(AbstractMotor::gearset::green, {{4_in, 11.5_in}, imev5GreenTPR})
 		.withMaxVelocity(50)
 		// left encoder in ADI ports A & B, right encoder in ADI ports C & D (reversed)
-		.withSensors(ADIEncoder{'H', 'G'}, ADIEncoder{'D', 'C'})
+		.withSensors(ADIEncoder{'H', 'G'}, ADIEncoder{'D', 'C'}, ADIEncoder{'A', 'B'})
 		// specify the tracking wheels diameter (2.75 in), track (7 in), and TPR (360)
 		.withOdometry({{2.75_in, 7_in}, quadEncoderTPR}, StateMode::FRAME_TRANSFORMATION)
 		.buildOdometry();
@@ -45,7 +45,7 @@ std::shared_ptr<AsyncMotionProfileController> profileController =
 
 std::shared_ptr<AsyncPositionController<double, double>> rightsidecontroller =
 	AsyncPosControllerBuilder()
-		.withMotor({14, 19}) // lift motor port 3
+		.withMotor({11, 13}) // lift motor port 3
    		// .withGains({liftkP, liftkI, liftkD})
 		.build();
 
@@ -56,13 +56,13 @@ std::shared_ptr<AsyncPositionController<double, double>> leftsidecontroller =
 		// 	0.5,
 		// 	2.5
 											//})
-		.withMotor({20, 16}) // lift motor port 3
+		.withMotor({19, 20}) // lift motor port 3
 						//        .withGains({liftkP, liftkI, liftkD})
 		.build();
 
 std::shared_ptr<AsyncPositionController<double, double>> jawcontroller =
 	AsyncPosControllerBuilder()
-		.withMotor(15) // lift motor port 3
+		.withMotor(1) // lift motor port 3
 		//        .withGains({liftkP, liftkI, liftkD})
 		.build();
 
@@ -74,7 +74,7 @@ std::shared_ptr<AsyncPositionController<double, double>> liftcontroller =
 
 std::shared_ptr<AsyncPositionController<double, double>> forkcontroller =
 	AsyncPosControllerBuilder()
-		.withMotor(1) // lift motor port 3
+		.withMotor(15) // lift motor port 3
 	//    .withGains({liftkP, liftkI, liftkD})
 		.build();
 

@@ -71,7 +71,7 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-	my_autonomous();
+	right_auton2();
 }
 
 /**

@@ -24,4 +24,6 @@ namespace tracking {
     void track_pos();
 
     void reset();
+
+    double get_distance();
 }
