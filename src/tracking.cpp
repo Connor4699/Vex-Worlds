@@ -79,7 +79,7 @@ namespace tracking {
         double deltaTheta = (deltaL-deltaR) / dist_between_wheels;
         
         // calculating the change in position of the tracking centre in inches
-        double deltaCentre = (deltaL+deltaR) / 2;
+        double deltaCentre = (deltaL+deltaR) / 2.0;
         
         // calculating the perpendicular displacement using dist-to-rear as the forward offset
         double deltaPerp = deltaB - (dist_to_rear_enc*deltaTheta);

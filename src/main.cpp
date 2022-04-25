@@ -35,7 +35,9 @@ void initialize() {
 	motor::claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	motor::back_claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	motor::intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-
+	
+	pros::delay(500);
+	
 	pros::Task tracking_task(tracking::track_pos);
 	pros::Task hold_task(motor_hold_task);
 	//autonomous();
