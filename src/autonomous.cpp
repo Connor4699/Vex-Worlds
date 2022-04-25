@@ -37,6 +37,16 @@ void right_auton2() {
     bool reached_target = false;
     
     while (time <= 15000) {
+        if (!reached_target && tracking::get_distance() > distance) {
+            reached_target = true;
+            motor::claw.move(-75);
+            motor::front_left.move(0);
+            motor::back_left.move(0);
+            motor::front_right.move(0);
+            motor::back_right.move(0);
+            pros::delay(500);
+            time+=500;
+        }
         if (tracking::get_distance() > distance) reached_target = true;
         if (reached_target) {
             double power = (tracking::get_distance() / distance) * 100;
@@ -45,15 +55,17 @@ void right_auton2() {
             motor::back_left.move(-power);
             motor::front_right.move(-power);
             motor::back_right.move(-power);
-            motor::claw.move(-75);
+            //motor::claw.move(-75);
+            
         }
         else {
             motor::front_left.move(100);
             motor::back_left.move(100);
             motor::front_right.move(100);
             motor::back_right.move(100);
-            motor::claw.move(20);
+            //motor::claw.move(85);
         }
+        motor::lift.move(-20);
         time += 20;
         pros::delay(20);
     }

@@ -38,7 +38,7 @@ void initialize() {
 
 	pros::Task tracking_task(tracking::track_pos);
 	pros::Task hold_task(motor_hold_task);
-	autonomous();
+	//autonomous();
 }
 
 /**
