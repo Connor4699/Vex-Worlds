@@ -4,8 +4,8 @@ namespace tracking {
 	RobotPosition robot_pos = {0, 0, 0};
 	EncoderDistances enc_dist = {0, 0, 0};
 	const double ticks_per_inch = 360/(2.75*pi);
-	const double dist_between_wheels = 9.24;
-	const double dist_to_rear_enc = -3; /** @todo tune this value */
+	const double dist_between_wheels = 9.73;
+	const double dist_to_rear_enc = -5.85; /** @todo tune this value */
 
 	/**
 	 * @brief 
@@ -36,7 +36,7 @@ namespace tracking {
 			half_ang = deltaTheta/2.0;
 			double r = deltaB/deltaTheta;
 			double r2 = deltaR/deltaTheta;
-			local_x = 2.0 * std::sin(half_ang) * (r + dist_to_rear_enc); // h2
+			local_x = 2.0 * std::sin(half_ang) * (r + 3.5); // h2
 			local_y = 2.0 * std::sin(half_ang) * (r2 + dist_between_wheels/2.0); // h
 		}
 		else {
@@ -96,6 +96,7 @@ namespace tracking {
         robot_pos.x += deltaX;
         robot_pos.y += deltaY;
         robot_pos.heading += deltaTheta;
+		robot_pos.heading = std::fmod(robot_pos.heading, (2*pi));
 
         // updating encoder positions
 		enc_dist.left = posL;
@@ -118,7 +119,7 @@ namespace tracking {
 			pros::lcd::set_text(4, "left (in.): " + std::to_string(enc_dist.left));
 			pros::lcd::set_text(5, "right (in.): " + std::to_string(enc_dist.right));
 			pros::lcd::set_text(6, "back (in.): " + std::to_string(enc_dist.back));
-			pros::delay(20);
+			pros::delay(10);
 		}
 	}
 

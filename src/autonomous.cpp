@@ -63,7 +63,7 @@ void right_auton2() {
             motor::back_left.move(100);
             motor::front_right.move(100);
             motor::back_right.move(100);
-            //motor::claw.move(85);
+            motor::claw.move(85);
         }
         motor::lift.move(-20);
         time += 20;
