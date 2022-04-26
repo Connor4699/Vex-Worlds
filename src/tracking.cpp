@@ -5,7 +5,7 @@ namespace tracking {
 	EncoderDistances enc_dist = {0, 0, 0};
 	const double ticks_per_inch = 360/(2.75*pi);
 	const double dist_between_wheels = 9.73;
-	const double dist_to_rear_enc = -5.85; /** @todo tune this value */
+	const double dist_to_rear_enc = 3; /** @todo tune this value */
 
 	/**
 	 * @brief 
@@ -104,6 +104,65 @@ namespace tracking {
 		enc_dist.back = posB;
     }
 
+	void positionTracking() {
+		// getting positions of encoders in inches
+        double posL = ticks_to_inches(enc::left.get_value());
+        double posR = ticks_to_inches(enc::right.get_value());
+        double posB = ticks_to_inches(enc::back.get_value());
+
+        // calculating the change in position of the encoders in inches
+        double deltaL = posL - enc_dist.left;
+		double deltaR = posR - enc_dist.right;
+		double deltaB = posB - enc_dist.back;
+
+		// updating encoder positions
+		enc_dist.left = posL;
+		enc_dist.right = posR;
+		enc_dist.back = posB;
+
+		//Calculate the change in the angle of the bot (RADIANS)
+		double deltaTheta = (deltaL-deltaR) / dist_between_wheels;
+
+
+		double deltaXLocal, deltaYLocal;
+		//If we didn't turn, then we only translated
+		if(deltaTheta == 0) {
+			deltaXLocal = deltaB;
+		// could be either L or R, since if deltaTheta == 0 we assume they're =
+			deltaYLocal = deltaL;
+		}
+		//Else, caluclate the new local position
+		else {
+		//Calculate the changes in the X and Y values (INCHES)
+		//General equation is:
+			//Distance = 2 * Radius * sin(deltaTheta / 2)
+			deltaXLocal = 2 * sin(deltaTheta / 2.0) * ((deltaB / deltaTheta) + dist_between_wheels/2.0);
+			deltaYLocal = 2 * sin(deltaTheta / 2.0) * ((deltaR / deltaTheta) - dist_to_rear_enc);
+
+		}
+
+		//The average angle of the robot during it's arc (RADIANS)
+		double avgThetaForArc = robot_pos.heading + (deltaTheta / 2);
+
+		double deltaXGlobal = (deltaYLocal * cos(avgThetaForArc)) - (deltaXLocal * sin(avgThetaForArc));
+		double deltaYGlobal = (deltaYLocal * sin(avgThetaForArc)) + (deltaXLocal * cos(avgThetaForArc));
+
+		robot_pos.heading += deltaTheta;
+
+		//Wraps angles back around if they ever go under 0 or over 2 pi
+		while(robot_pos.heading >= 2 * pi) {
+			robot_pos.heading -= 2 * pi;
+		}
+		
+		while(robot_pos.heading < 0) {
+			robot_pos.heading += 2 * pi;
+		}
+
+		//Update global positions
+		robot_pos.x += deltaXGlobal;
+		robot_pos.y += deltaYGlobal;
+	}
+
 	/**
 	 * @brief 
 	 * 
@@ -112,7 +171,8 @@ namespace tracking {
 		reset();
 		while (true) {
 			//update_pos();
-            update_pos2();
+            //update_pos2();
+			positionTracking();
 			pros::lcd::set_text(1, "radians: " + std::to_string(robot_pos.heading));
 			pros::lcd::set_text(2, "x: " + std::to_string(robot_pos.x));
 			pros::lcd::set_text(3, "y: " + std::to_string(robot_pos.y));
