@@ -39,9 +39,9 @@ void initialize() {
 	pros::delay(500);
 	
 	pros::Task tracking_task(tracking::track_pos);
-	pros::Task hold_task(motor_hold_task);
-	pros::Task claw_h(claw_hold_task);
-	pros::Task b_claw_h(back_claw_hold_task);
+	pros::Task lift_hold_task(lift_hold);
+	pros::Task claw_hold_task(claw_hold);
+	pros::Task bclaw_hold_task(back_claw_hold);
 	//autonomous();
 }
 
