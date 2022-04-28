@@ -26,4 +26,10 @@ namespace tracking {
     void reset();
 
     double get_distance();
+
+    double get_x();
+
+	double get_y();
+
+	double get_heading();
 }

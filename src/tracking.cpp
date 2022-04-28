@@ -4,8 +4,8 @@ namespace tracking {
 	RobotPosition robot_pos = {0, 0, 0};
 	EncoderDistances enc_dist = {0, 0, 0};
 	const double ticks_per_inch = 360/(2.75*pi);
-	const double dist_between_wheels = 9.73;
-	const double dist_to_rear_enc = 3; /** @todo tune this value */
+	const double dist_between_wheels = 9.70;
+	const double dist_to_rear_enc = 6.45; /** @todo tune this value */
 
 	/**
 	 * @brief 
@@ -24,7 +24,7 @@ namespace tracking {
 		double deltaL = ticks_to_inches(enc::left.get_value()) - enc_dist.left;
 		double deltaR = ticks_to_inches(enc::right.get_value()) - enc_dist.right;
 		double deltaB = ticks_to_inches(enc::back.get_value()) - enc_dist.back;
-		double deltaTheta = (deltaL-deltaR) / dist_between_wheels;
+		double deltaTheta = (deltaR-deltaL) / dist_between_wheels;
 
 		enc_dist.left = ticks_to_inches(enc::left.get_value());
 		enc_dist.right = ticks_to_inches(enc::right.get_value());
@@ -36,7 +36,7 @@ namespace tracking {
 			half_ang = deltaTheta/2.0;
 			double r = deltaB/deltaTheta;
 			double r2 = deltaR/deltaTheta;
-			local_x = 2.0 * std::sin(half_ang) * (r + 3.5); // h2
+			local_x = 2.0 * std::sin(half_ang) * (r + dist_to_rear_enc); // h2
 			local_y = 2.0 * std::sin(half_ang) * (r2 + dist_between_wheels/2.0); // h
 		}
 		else {
@@ -120,8 +120,8 @@ namespace tracking {
 		enc_dist.right = posR;
 		enc_dist.back = posB;
 
-		//Calculate the change in the angle of the bot (RADIANS)
-		double deltaTheta = (deltaL-deltaR) / dist_between_wheels;
+		// calculate the change in the angle of the bot (RADIANS)
+		double deltaTheta = (deltaR-deltaL) / dist_between_wheels;
 
 
 		double deltaXLocal, deltaYLocal;
@@ -170,9 +170,9 @@ namespace tracking {
 	void track_pos() {
 		reset();
 		while (true) {
-			//update_pos();
+			update_pos();
             //update_pos2();
-			positionTracking();
+			//positionTracking();
 			pros::lcd::set_text(1, "radians: " + std::to_string(robot_pos.heading));
 			pros::lcd::set_text(2, "x: " + std::to_string(robot_pos.x));
 			pros::lcd::set_text(3, "y: " + std::to_string(robot_pos.y));
@@ -193,5 +193,17 @@ namespace tracking {
 
 	double get_distance() {
 		return (enc_dist.left+enc_dist.right)/2.0;
+	}
+
+	double get_x() {
+		return robot_pos.x;
+	}
+
+	double get_y() {
+		return robot_pos.y;
+	}
+
+	double get_heading() {
+		return robot_pos.heading;
 	}
 }

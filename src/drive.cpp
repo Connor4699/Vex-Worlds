@@ -176,6 +176,16 @@ namespace drive {
     }
 
     void drive_to_point(double x, double y) {
+        double changeX = tracking::get_x() - x;
+        double changeY = tracking::get_y() - y;
+        
+    }
+
+    void turn_radians(double angle) {
+        
+    }
+
+    void move(double inches) {
 
     }
 }

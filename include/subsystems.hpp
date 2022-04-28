@@ -17,3 +17,5 @@ namespace intake {
 }
 
 void motor_hold_task();
+void claw_hold_task();
+void back_claw_hold_task();

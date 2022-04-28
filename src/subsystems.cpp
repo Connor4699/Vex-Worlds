@@ -31,7 +31,7 @@ namespace lift {
 }
 
 namespace claw {
-	bool hold = true;
+	bool hold = true, hold_back = true;
     void op_claw() {
         if (Master.get_digital(DIGITAL_R1)) {
 			hold = false;
@@ -49,13 +49,16 @@ namespace claw {
 
 	void op_back_claw() {
 		if (Master.get_digital(DIGITAL_L2)) {
-			motor::back_claw.move_velocity(100);
+			hold_back = false;
+			motor::back_claw.move(127);
 		}
 		else if (Master.get_digital(DIGITAL_L1)){
-			motor::back_claw.move_velocity(-100);
+			hold_back = false;
+			motor::back_claw.move(-127);
 		}
 		else {
-			motor::back_claw.move_velocity(0);
+			hold_back = true;
+			motor::back_claw.move(0);
 		}
 	}
 }
@@ -72,7 +75,7 @@ namespace intake {
 			}
 		}
 		if (motor::lift.get_position() >= 400 && run) {
-			motor::intake.move(100);
+			motor::intake.move(127);
 		}
 		else {
 			motor::intake.move(0);
@@ -86,6 +89,32 @@ void motor_hold_task() {
 			int absPos = motor::lift.get_position();
 			while (lift::hold) {
 				motor::lift = absPos - motor::lift.get_position();
+				pros::delay(20);
+			}
+		}
+		pros::delay(20);
+	}
+}
+
+void claw_hold_task() {
+	while (true) {
+		if (claw::hold) {
+			int absPos = motor::claw.get_position();
+			while (claw::hold) {
+				motor::claw = absPos - motor::claw.get_position();
+				pros::delay(20);
+			}
+		}
+		pros::delay(20);
+	}
+}
+
+void back_claw_hold_task() {
+	while (true) {
+		if (claw::hold_back) {
+			int absPos = motor::back_claw.get_position();
+			while (claw::hold_back) {
+				motor::back_claw = absPos - motor::back_claw.get_position();
 				pros::delay(20);
 			}
 		}
