@@ -10,7 +10,7 @@ namespace tracking {
     };
 
     extern RobotPosition robot_pos;
-    extern EncoderDistances enc_dist;
+    extern EncoderDistances enc_pos;
     extern const double ticks_per_inch;
     extern const double dist_between_wheels;
     extern const double dist_to_rear_enc;
@@ -18,8 +18,6 @@ namespace tracking {
     double ticks_to_inches(double ticks);
 
     void update_pos();
-
-    void update_pos2();
 
     void track_pos();
 

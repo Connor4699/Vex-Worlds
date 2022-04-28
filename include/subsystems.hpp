@@ -6,7 +6,7 @@ namespace lift {
 }
 
 namespace claw {
-    extern bool hold;
+    extern bool hold, hold_back;
     void op_claw();
 	void op_back_claw();
 }
@@ -16,6 +16,6 @@ namespace intake {
 	void op_intake();
 }
 
-void motor_hold_task();
-void claw_hold_task();
-void back_claw_hold_task();
+void lift_hold();
+void claw_hold();
+void back_claw_hold();

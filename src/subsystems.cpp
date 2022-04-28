@@ -83,7 +83,7 @@ namespace intake {
 	}
 }
 
-void motor_hold_task() {
+void lift_hold() {
 	while (true) {
 		if (lift::hold) {
 			int absPos = motor::lift.get_position();
@@ -96,7 +96,7 @@ void motor_hold_task() {
 	}
 }
 
-void claw_hold_task() {
+void claw_hold() {
 	while (true) {
 		if (claw::hold) {
 			int absPos = motor::claw.get_position();
@@ -109,7 +109,7 @@ void claw_hold_task() {
 	}
 }
 
-void back_claw_hold_task() {
+void back_claw_hold() {
 	while (true) {
 		if (claw::hold_back) {
 			int absPos = motor::back_claw.get_position();
