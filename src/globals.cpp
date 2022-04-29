@@ -101,6 +101,6 @@ const double tkp = 17;
 const double tkd = 5;
 const double tki = 0;
 
-const double turnkp = 130;
-const double turnkd = 11;
+const double turnkp = 100;
+const double turnkd = 10;
 const double turnki = 0;

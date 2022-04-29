@@ -42,7 +42,7 @@ void initialize() {
 	pros::Task lift_hold_task(lift_hold);
 	pros::Task claw_hold_task(claw_hold);
 	pros::Task bclaw_hold_task(back_claw_hold);
-	//autonomous();
+	autonomous();
 }
 
 /**
@@ -75,7 +75,8 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-	right_auton2();
+	//right_auton2();
+	my_autonomous();
 }
 
 /**

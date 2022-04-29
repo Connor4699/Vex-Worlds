@@ -1,6 +1,9 @@
 #include "main.h"
 
 namespace drive {
+    PIDController turn_PID = PIDController(90, 0, 0);
+    PIDController drive_PID = PIDController(0, 0, 0);
+
     void op_drive() {
         const int deadband = 5;
         int x = abs(Master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X));
@@ -182,8 +185,30 @@ namespace drive {
     }
 
     void turn_radians(double angle) {
-        
+        turn_PID.reset();
+        turn_PID.set_target(tracking::robot_pos.heading + angle);
+        while (true) {
+            turn_PID.update(tracking::robot_pos.heading);
+            setDrive(-turn_PID.output, turn_PID.output);
+            if (turn_PID.reached_target(tracking::robot_pos.heading)) {
+                break;
+            }
+            pros::delay(10);
+        }
+        // while (true) {
+        //     turnP = angle - tracking::robot_pos.heading;
+        //     turnI += turnP;
+        //     turnD = turnP - preTurn;
+        //     turnPID = (turnP * turnkp) + (turnD * turnkd) + (turnI * turnki);
+        //     setDrive(-1*turnPID, 1*turnPID);
+        //     if (angle == tracking::robot_pos.heading || (abs(angle-tracking::robot_pos.heading) < 0.01)) {
+        //         break;
+        //     }
+        //     preTurn = turnP;
+        //     pros::delay(20);
+        // }
     }
+        
 
     void move(double inches) {
 

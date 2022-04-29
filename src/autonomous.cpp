@@ -5,7 +5,7 @@ double rotations = 24/circumference;
 double ticks = rotations*360;
 
 void my_autonomous() {
-
+    drive::turn_radians(-1.5708);
 }
 
 void right_auton() {
