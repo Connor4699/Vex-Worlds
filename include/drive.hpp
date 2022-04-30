@@ -16,5 +16,6 @@ namespace drive {
     void PIDMove(double units);
     void PIDTurn(double radians);
     void turn_radians(double angle);
+    void move_forward(double inches);
 }
 

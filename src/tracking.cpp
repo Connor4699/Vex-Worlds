@@ -4,7 +4,7 @@ namespace tracking {
 	RobotPosition robot_pos = {0, 0, 0}; // x (inches), y (inches), heading (radians)
 	EncoderDistances enc_pos = {0, 0, 0}; // left, right, back (all in encoder ticks)
 	const double inches_per_tick = (2.75*pi)/360;
-	const double dist_between_wheels = 9.70;
+	const double dist_between_wheels = 9.75;
 	const double dist_to_rear_enc = 6.45; /** @todo tune this value */
 
 	void update_pos() {
@@ -58,7 +58,7 @@ namespace tracking {
 	}
 
 	double get_distance() {
-		return (enc_pos.left+enc_pos.right)/2.0;
+		return inches_per_tick * (enc_pos.left+enc_pos.right)/2.0;
 	}
 
 	double get_x() {

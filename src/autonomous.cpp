@@ -5,7 +5,14 @@ double rotations = 24/circumference;
 double ticks = rotations*360;
 
 void my_autonomous() {
+    //drive::turn_radians(pi);
+    drive::move_forward(72);
+    drive::turn_radians(-pi/2);
+    drive::move_forward(36);
     drive::turn_radians(pi/2);
+    drive::move_forward(12);
+    drive::turn_radians(pi);
+    drive::move_forward(72);
 }
 
 void right_auton() {
