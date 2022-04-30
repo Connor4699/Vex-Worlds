@@ -1,7 +1,7 @@
 #include "main.h"
 
 namespace drive {
-    PIDController turn_PID = PIDController(90, 0, 0);
+    PIDController turn_PID = PIDController(70, 0.25, 0);
     PIDController drive_PID = PIDController(0, 0, 0);
 
     void op_drive() {
@@ -191,7 +191,7 @@ namespace drive {
             turn_PID.update(tracking::robot_pos.heading);
             setDrive(-turn_PID.output, turn_PID.output);
             if (turn_PID.reached_target(tracking::robot_pos.heading)) {
-                break;
+                //break;
             }
             pros::delay(10);
         }

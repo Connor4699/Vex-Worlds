@@ -9,6 +9,7 @@ public:
     double target;
     double output;
     double prev_error;
+    double error_sum;
     
     PIDController(double kP, double kI, double kD);
     void update(double curr_val);
