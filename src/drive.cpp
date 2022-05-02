@@ -1,7 +1,7 @@
 #include "main.h"
 
 namespace drive {
-    PIDController turn_PID = PIDController(140, 0.5, 700);
+    PIDController turn_PID = PIDController(100, 0.5, 0);
     PIDController drive_PID = PIDController(20, 0.25, 320);
 
     void op_drive() {
@@ -45,7 +45,7 @@ namespace drive {
 
         double leftPower = power - 0.6*turn;
 		double rightPower = power + 0.6*turn;
-
+        //pros::lcd::set_text(4, "power: " + std::to_string(leftPower));
 		motor::front_left.move(rightPower);
 		motor::back_left.move(rightPower);
 		motor::front_right.move(leftPower);
@@ -187,13 +187,13 @@ namespace drive {
     void turn_radians(double angle) {
         turn_PID.reset();
         turn_PID.set_target(tracking::robot_pos.heading + angle);
-        turn_PID.set_limit(50);
+        turn_PID.set_limit(120);
         turn_PID.set_acceptable_error(0.01);
         while (true) {
             turn_PID.update(tracking::robot_pos.heading);
             setDrive(-turn_PID.output, turn_PID.output);
             if (turn_PID.reached_target(tracking::robot_pos.heading)) {
-                break;
+                //break;
             }
             pros::delay(10);
         }
@@ -213,6 +213,13 @@ namespace drive {
             }
             pros::delay(10);
         }
+    }
+
+    void turn_global(double radians) {
+        double turnAngle = std::fmod(radians - tracking::robot_pos.heading, 2*pi);
+        if (turnAngle < 0) turnAngle += 2*pi;
+        if (turnAngle > pi) turnAngle -= 2*pi;
+        turn_radians(-turnAngle);
     }
 }
 

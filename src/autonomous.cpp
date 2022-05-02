@@ -6,14 +6,12 @@ double rotations = 24/circumference;
 double ticks = rotations*360;
 
 void my_autonomous() {
-    //drive::turn_radians(pi);
-    drive::move_forward(72);
-    drive::turn_radians(-pi/2);
-    drive::move_forward(36);
+    // drive::turn_radians(pi*1.5);
+    // pros::delay(1000);
+    // drive::turn_radians(-pi/2);
+    // pros::delay(1000);
+    // drive::turn_global(0);
     drive::turn_radians(pi/2);
-    drive::move_forward(12);
-    drive::turn_radians(pi);
-    drive::move_forward(72);
 }
 
 void right_auton() {
@@ -142,7 +140,7 @@ void skills_auton() {
     pros::delay(500);
     claw::hold_back = true;
     drive::move_forward(8);
-    drive::turn_radians(pi/2);
+    drive::turn_radians(-pi/2);
     //drive to neutral
     //drive::move_forward(48);
     claw::hold = false;
