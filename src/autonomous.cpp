@@ -82,7 +82,10 @@ void left_auton1() {
     //pros::delay(2000);
     claw::hold = false;
     motor::claw.move_absolute(900, 100);
-    drive::move_forward(47);
+    drive::setDrive(1000, 1000);
+    pros::delay(900);
+    drive::setDrive(1000, 1000);
+    //drive::move_forward(47);
     motor::claw.move_absolute(375, 1000);
     pros::delay(350);
     claw::hold = true;
