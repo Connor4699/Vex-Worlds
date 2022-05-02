@@ -1,8 +1,8 @@
 #include "main.h"
 
 namespace drive {
-    PIDController turn_PID = PIDController(140, 0, 700);
-    PIDController drive_PID = PIDController(20, 0, 320);
+    PIDController turn_PID = PIDController(140, 0.5, 700);
+    PIDController drive_PID = PIDController(20, 0.25, 320);
 
     void op_drive() {
         const int deadband = 5;

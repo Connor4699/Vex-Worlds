@@ -76,7 +76,8 @@ void competition_initialize() {}
  */
 void autonomous() {
 	//right_auton2();
-	my_autonomous();
+	//my_autonomous();
+	left_auton1();
 }
 
 /**

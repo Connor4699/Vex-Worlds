@@ -74,8 +74,8 @@ namespace intake {
 				run = true;
 			}
 		}
-		if (motor::lift.get_position() >= 400 && run) {
-			motor::intake.move(70);
+		if (motor::lift.get_position() >= 700 && run) {
+			motor::intake.move(115);
 		}
 		else {
 			motor::intake.move(0);
