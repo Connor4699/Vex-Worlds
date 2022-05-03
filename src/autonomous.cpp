@@ -79,24 +79,32 @@ void right_auton2() {
 void left_auton1() {
     //pros::delay(2000);
     claw::hold = false;
-    motor::claw.move_absolute(900, 100);
-    drive::setDrive(1000, 1000);
-    pros::delay(900);
-    drive::setDrive(1000, 1000);
+    motor::claw.move_absolute(1000, 100);
+    lift::hold = false;
+    motor::lift.move(-40);
+    while (tracking::get_distance() < 44) {
+        drive::setDrive(127, 127);
+    }
+    motor::lift.move(0);
+    lift::hold = true;
+    drive::setDrive(0, 0);
+    // drive::setDrive(1000, 1000);
+    // pros::delay(1020);
+    // drive::setDrive(1000, 1000);
     //drive::move_forward(47);
-    motor::claw.move_absolute(375, 1000);
-    pros::delay(350);
+    motor::claw.move_absolute(325, 1000);
+    pros::delay(250);
     claw::hold = true;
-    drive::move_forward(-35);
+    drive::move_forward(-40, 0);
     claw::hold_back = false;
     motor::back_claw.move_absolute(-1500, 100);
     lift::hold = false;
-    motor::lift.move_absolute(500, 100);
+    motor::lift.move_absolute(550, 100);
     pros::delay(100);
     drive::turn_radians(-pi/6);
     lift::hold = true;
     drive::move_forward(-5);
-    drive::turn_radians(pi*.4);
+    drive::turn_radians(pi/3);
     drive::setDrive(-75, -75);
     pros::delay(600);
     drive::setDrive(0, 0);

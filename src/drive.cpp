@@ -1,8 +1,9 @@
 #include "main.h"
 
 namespace drive {
-    PIDController turn_PID = PIDController(100, 0.5, 0);
+    PIDController turn_PID = PIDController(110, 0.5, 100);
     PIDController drive_PID = PIDController(20, 0.25, 320);
+    PIDController dTurn_PID = PIDController(40, 0, 0);
 
     void op_drive() {
         const int deadband = 5;
@@ -187,31 +188,38 @@ namespace drive {
     void turn_radians(double angle) {
         turn_PID.reset();
         turn_PID.set_target(tracking::robot_pos.heading + angle);
-        turn_PID.set_limit(120);
+        turn_PID.set_limit(80);
         turn_PID.set_acceptable_error(0.01);
         while (true) {
             turn_PID.update(tracking::robot_pos.heading);
             setDrive(-turn_PID.output, turn_PID.output);
             if (turn_PID.reached_target(tracking::robot_pos.heading)) {
-                //break;
+                break;
             }
             pros::delay(10);
         }
     }
-        
 
     void move_forward(double inches) {
+        move_forward(inches, tracking::robot_pos.heading);
+    }    
+
+    void move_forward(double inches, double angle) {
         drive_PID.reset();
         drive_PID.set_limit(50);
         drive_PID.set_acceptable_error(0.5);
         drive_PID.set_target(tracking::get_distance() + inches);
+        dTurn_PID.reset();
+        dTurn_PID.set_acceptable_error(0.1);
+        dTurn_PID.set_target(angle);
         while (true) {
             drive_PID.update(tracking::get_distance());
-            setDrive(drive_PID.output, drive_PID.output);
+            dTurn_PID.update(tracking::robot_pos.heading);
+            setDrive(drive_PID.output + dTurn_PID.output, drive_PID.output - dTurn_PID.output);
             if (drive_PID.reached_target(tracking::get_distance())) {
                 break;
             }
-            pros::delay(10);
+            pros::delay(20);
         }
     }
 
